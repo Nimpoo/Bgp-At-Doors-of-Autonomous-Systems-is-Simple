@@ -1,0 +1,4 @@
+FROM frr:latest
+
+RUN sed -i 's/^\(bgpd\|ospfd\|isisd\)=no$/\1=yes/g' /etc/frr/daemons \
+	&& sed -i 's/^#\(frr_profile="traditional"\)$/\1/g' /etc/frr/daemons
