@@ -80,6 +80,10 @@ Ces termes étaient important pour comprendre ce qu'est réellement le **VXLAN**
 
 ### *Ce schéma définitif conclue tout ce qu'on a pu voir sur VXLAN et son fonctionnement :*<br />![](assets/VXLAN.png)
 
+<br />
+<br />
+<br />
+
 -	**<u>VXLAN Static (Unicast)</u>** : Static VXLAN utilise des <u>entrées de réplication statiques pour répliquer les paquets entre les Points de Terminaison de Tunnel VXLAN (VTEPs - VXLAN Tunnel EndPoints)</u>. Cela signifie que chaque VTEP a une <u>liste préconfigurée des autres VTEPs</u> auxquels il doit envoyer les paquets. Il fonctionne de la manière suivant : <u>**Ingress Replication**</u>. Chaque VTEP envoie des copies **des paquet de <u>broadcast (*diffusion*)</u> de <u>multicast (*multidiffusion*)</u> et de <u>unknown unicast (*monodiffusion inconnue*)</u>** à **TOUS LES VTEPs D'UNE LISTE QUI A ÉTÉ PRE-CONFIGURÉE**.
 
 ## On appelle cela "gérer le <u>**Trafic BUM**</u> (Broadcast - Unknown unicast - Multicast)".
