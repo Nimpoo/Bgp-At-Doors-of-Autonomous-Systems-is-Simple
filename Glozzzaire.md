@@ -63,7 +63,7 @@ Ces termes étaient important pour comprendre ce qu'est réellement le **VXLAN**
 3. <u>VTEPs (VXLAN Tunnel EndPoints)</u> : Les VTEPs sont des dispositifs qui **encapsulent et décapsulent les trames Ethernet dans les paquets UDP**, permettant ainsi le transport des données à travers le réseau IP. On appelle cela des "tunnels" car une fois l'encapsulation faite, les routeurs qui transmettent l'information entre la source et la destination ne peuvent pas voir en claire le contenu de l'info, jusqu'au destinataire. <u>**Comme un tunnel, on ne voit que ce qui "rentre" et que ce qui "sort", et pas ce qui se passe dans le tunnel**</u>.<br />
 ![](assets/VTEP.png)
 
-4. <u>*Scalabilité*</u> : Avec jusqu'à <u>**16 millions de réseaux logiques disponibles (exactement 16 777 215)**</u> grâce à un **identifiant de réseau VXLAN (VNI - *Virtual Network Identifier*) de `24 bits`** (contrairement aux 4096 seulement pour VLAN avec un VNI de `12 bits`), <u>VXLAN offre une évolutivité bien supérieure</u>, permettant à l'entreprise de créer autant de réseaux virtuels que nécessaire pour ses différents départements ou applications.
+4. <u>*Scalabilité*</u> : Avec jusqu'à <u>**16 millions de réseaux logiques disponibles (exactement 16 777 215)**</u> grâce à un **identifiant de réseau VXLAN (VNI - *Virtual Network Identifier*) de `24 bits`** (contrairement aux 4096 seulement pour VLAN avec un VNI de `12 bits`), <u>VXLAN offre une **ÉVOLUTIVITÉ** bien supérieure</u>, permettant à l'entreprise de créer autant de réseaux virtuels que nécessaire pour ses différents départements ou applications.
 
 5. <u>*Flexibilité*</u> : VXLAN permet de créer des réseaux virtuels qui peuvent s'**étendre au-delà des limites physiques d'un réseau local**, offrant ainsi une grande flexibilité dans la conception et la gestion des réseaux.
 
@@ -78,13 +78,20 @@ Ces termes étaient important pour comprendre ce qu'est réellement le **VXLAN**
 
 **VXLAN** est une révolution technologique par rapport aux **VLANs traditionnels** en raison de sa capacité à créer des <u>**réseaux virtuels étendus, évolutifs et flexibles**</u>. Il permet de surmonter les limites des VLANs traditionnels en offrant une <u>**meilleure scalabilité, flexibilité et efficacité dans la gestion des réseaux modernes**</u>, en particulier dans les environnements de <u>*cloud computing et les grands centres de données*</u>. [<Pour en savoir plus sur **VXLAN**>](https://www.fibermall.com/fr/blog/vxlan.htm#) + [Source complémentaire](https://www.juniper.net/fr/fr/research-topics/what-is-vxlan.html)
 
-### *Ce schéma définitif conclue tout ce qu'on a pu voir sur VXLAN et son fonctionnement :*
-![](assets/VXLAN.png)
+### *Ce schéma définitif conclue tout ce qu'on a pu voir sur VXLAN et son fonctionnement :*<br />![](assets/VXLAN.png)
 
--	**<u>Static Cast</u>** : 
+-	**<u>VXLAN Static (Unicast)</u>** : Static VXLAN utilise des <u>entrées de réplication statiques pour répliquer les paquets entre les Points de Terminaison de Tunnel VXLAN (VTEPs - VXLAN Tunnel EndPoints)</u>. Cela signifie que chaque VTEP a une <u>liste préconfigurée des autres VTEPs</u> auxquels il doit envoyer les paquets. Il fonctionne de la manière suivant : <u>**Ingress Replication**</u>. Chaque VTEP envoie des copies **des paquet de <u>broadcast (*diffusion*)</u> de <u>multicast (*multidiffusion*)</u> et de <u>unknown unicast (*monodiffusion inconnue*)</u>** à **TOUS LES VTEPs D'UNE LISTE QUI A ÉTÉ PRE-CONFIGURÉE**.
 
--	**<u>Dynamic Cast</u>** : 
+## On appelle cela "gérer le <u>**Trafic BUM**</u> (Broadcast - Unknown unicast - Multicast)".
+- Cela se fait via des **tunnels unicast**, où chaque paquet est envoyé <u>**individuellement à chaque VTEP distant**</u>. Simple a configuré et un contrôle efficace des chemins des paquets, mais son **évolutivité** est restraint par son inéfficacité à grande échelle à cause de l'**Ingress Replication** qui peut surcharger le réseau. Et doit chaque fois être mis à jour manuellement pour ajouter un nouveau VTEP à sa liste.<br />![](assets/ingress-replication.png)
 
--	**<u>Multicast</u>** : 
+-	**<u>VXLAN Dynamic (Multicast)</u>** : Dynamic VXLAN utilise des <u>groupes multicast</u> pour la diffusion du **trafic BUM**. Cela siginifie que les **paquet BUM** sont envoyés à un groupe multicast, et tous les VTEPs abonnés à ce groupe reçoivent les paquets, seulement les VTEPs interessés recoivent ces paquets. Il fonctionne en utilisant le **Multicast** tout simplement. Les VTEPs envoient les paquets à un groupe multicast IP. Les routeurs du réseau sous-jacent qui supportent le multicast se chargent de répliquer les paquets vers tous les VTEPs abonnés à ce groupe. Une solution qui ne surcharge pas la bande passante car cela envoie les paquets qu'aux destinataires interessés + c'est une solution **ÉVOLUTIVE** adaptée aux réseaux de grande envergure avec une quantité importante de trafic BUM. MAIS cela est plus complexe à mettre en place et à maintenir. Et la diffusion du trafic BUM via multicast nécessite souvent l'utilisation de [PIM (Protocol Independent Multicast)](https://en.wikipedia.org/wiki/Protocol-Independent_Multicast) et d'un point de rendez-vous, ce qui ajoute de la complexité au réseau.<br />![](assets/multicast.png)
+
+- Sources complémentaire :
+  - [Multicast vs Ingress Replication](https://community.cisco.com/t5/documents-de-routage-et-commutation/multicast-vs-ingress-replication-fabric-vxlan-evpn/ta-p/4951512)
+  - [Differences between Dynamic and Static VXLAN Modes](https://docs.starlingx.io/datanet/openstack/differences-between-dynamic-and-static-vxlan-modes.html)
+  - [Multicast vs Ingress Replication (advanced)](https://nwktimes.blogspot.com/2018/03/vxlan-part-iv-underlay-network_20.html)
+
+- **<u>Trafic BUM</u>** *Broadcast - Unknown unicast - Multicast* : 
 
 -	**<u>Bridge</u>** : 
