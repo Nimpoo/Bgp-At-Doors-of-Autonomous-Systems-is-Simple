@@ -70,13 +70,13 @@ Ces termes étaient important pour comprendre ce qu'est réellement le **VXLAN**
 6. <u>*Routage en couche 3*</u> : VXLAN utilise le **routage de couche 3 (IP) pour transporter les trames Ethernet (couche 2) à travers le réseau**. Le routage de couche 3 permet d'utiliser des techniques comme le <u>**multipath à coût égal ([ECMP - *Equal-Cost Multi-Path*](https://fr.wikipedia.org/wiki/Equal-cost_multi-path_routing))**</u>, qui répartit le trafic sur plusieurs chemins de manière équilibrée, augmentant ainsi l'utilisation des ressources réseau et réduisant les goulots d'étranglement.
 
 7. <u>*Évite les limitations de **[STP (Spanning Tree Protocol)](https://fr.wikipedia.org/wiki/Spanning_Tree_Protocol)***</u> ***(CE 7ÈME POINT PEUT-ÊTRE DISPENSABLE)*** : STP est un protocole utilisé dans les réseaux Ethernet pour éviter les boucles de réseau, qui peuvent causer des **tempêtes de diffusion ([broadcast storms](https://fr.wikipedia.org/wiki/Broadcast_storm`))** et des instabilités. Il fonctionne en désactivant certains chemins redondants dans le réseau, créant ainsi une topologie en arbre sans boucles. VXLAN évite ses limitations : *(Les 3 prochains points, je vous laisse faire vos propres recherches sur les **limitations de STP** et comment VXLAN les évite en faisant mieux le boulot que **STP**)*
-	- <u>Blocage de Chemins Redondants</u>
+	- <u>Blocage de Chemins Redondants</u> 
 	- <u>Convergence Lente</u>
 	- <u>Complexité de Gestion</u>
 
 ## Pour conclure sur VXLAN
 
-**VXLAN** est une révolution technologique par rapport aux **VLANs traditionnels** en raison de sa capacité à créer des <u>**réseaux virtuels étendus, évolutifs et flexibles**</u>. Il permet de surmonter les limites des VLANs traditionnels en offrant une <u>**meilleure scalabilité, flexibilité et efficacité dans la gestion des réseaux modernes**</u>, en particulier dans les environnements de <u>*cloud computing et les grands centres de données*</u>.
+**VXLAN** est une révolution technologique par rapport aux **VLANs traditionnels** en raison de sa capacité à créer des <u>**réseaux virtuels étendus, évolutifs et flexibles**</u>. Il permet de surmonter les limites des VLANs traditionnels en offrant une <u>**meilleure scalabilité, flexibilité et efficacité dans la gestion des réseaux modernes**</u>, en particulier dans les environnements de <u>*cloud computing et les grands centres de données*</u>. [<Pour en savoir plus sur **VXLAN**>](https://www.fibermall.com/fr/blog/vxlan.htm#) + [Source complémentaire](https://www.juniper.net/fr/fr/research-topics/what-is-vxlan.html)
 
 ### *Ce schéma définitif conclue tout ce qu'on a pu voir sur VXLAN et son fonctionnement :*
 ![](assets/VXLAN.png)
