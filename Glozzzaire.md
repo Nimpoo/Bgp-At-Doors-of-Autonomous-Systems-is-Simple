@@ -10,7 +10,7 @@ Il est également utilisé pour supporter des fonctionnalités avancées comme l
 
 Il existe deux types principaux de BGP :
 
--	**<u>eBGP</u>** *External BGP* : utilisé **2 ROUTEURS communiquent** entre 2 différents systèmes autonomes
+-	**<u>eBGP</u>** *External BGP* : utilisé quand **2 ROUTEURS communiquent** entre 2 différents systèmes autonomes
 
 -	**<u>iBGP</u>** *Internal BGP* : utilisé quand **2 ROUTEURS communiquent** au sein d'un même système autonome.
 
@@ -33,7 +33,7 @@ Pour OSPF, cela ne concerne que des informations venant de l'<u>INTERIEUR</u> de
 ![](assets/OSPF-vs-ISIS.png)
 
 -	**<u>VXLAN</u>** *Virtual eXtensible Local Area Network (Réseau Local eXtensible Virtuel)* - **[RFC 7348](https://www.rfc-editor.org/rfc/rfc7348.txt)** :
-	- <u>LAN</u> *Local Area Network (Réseau Local)* - **[RFC 1918](https://www.rfc-editor.org/rfc/rfc1918.html)** : Réseau informatique qui couvre une zone géographique limitée, comme un bâtiment. Les LAN sont utilisés pour connecter des dispositifs informatiques dans une zone restreinte afin de partager des ressources et des informations. LAN utilise les plages d'adressage IP définies par la [RFC 1918](https://www.rfc-editor.org/rfc/rfc1918.html). Et ces adresses ne sont pas routés sur Internet, seul des échanges entre 2 machines au sein du LAN est possible.
+	- <u>LAN</u> *Local Area Network (Réseau Local)* - **[RFC 1918](https://www.rfc-editor.org/rfc/rfc1918.html)** : Réseau informatique qui couvre une zone géographique limitée, comme un bâtiment. Les LAN sont utilisés pour connecter des dispositifs informatiques dans une zone restreinte afin de partager des ressources et des informations. LAN utilise les plages d'adressage IP définies par la [RFC 1918](https://www.rfc-editor.org/rfc/rfc1918.html). Et ces adresses ne sont pas routés sur Internet, seul des échanges entre 2 (OU PLUSIEURS) machines au sein du LAN est possible. C'est comme cela qu'on fait des LAN sur *Counter Strike* : toutes les machines sont connectées entre elles en LAN ce qi leur permet d'échanger leur informations et de pouvoir jouer en à plusieurs, chacun son PC, en **MULTIJOUEUR LOCAL**.
 ![](assets/IP-adress-for-LAN.png)
 
 	- <u>VLAN</u> *Virtual Local Area Network (Réseau Local Virtuel)* : Le VLAN permet aux ingénieurs de contrôler le système de réseau tout en améliorant la sécurité et l'évolutivité. Le LAN virtuel permet de segmenter les réseaux LAN en groupes distincts, ce qui renforce la sécurité du réseau et simplifie la gestion. Les données d'un groupe restent isolées des autres groupes. <u>Le VLAN réduit le trafic de diffusion et améliore l'efficacité du réseau en **segmentant/encapsulant chaque trame logiquement un grand réseau en réseaux de taille plus réduite**.</u> Il existe 2 méthodes courantes de configuration VLAN (statique et dynamique) et plusieurs catégories de <u>VLAN dynamiques</u>. [<Pour plus de détail sur les <u>**différentes méthodes de configuration VLAN et ses différentes catégories**</u>>](https://community.fs.com/fr/article/vlan-how-does-it-change-your-network-management.html) (Mais aussi sa [page Wikipédia](https://en.wikipedia.org/wiki/VLAN)).
