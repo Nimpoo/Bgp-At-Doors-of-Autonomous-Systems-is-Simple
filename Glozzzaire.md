@@ -48,6 +48,8 @@ Pour OSPF, cela ne concerne que des informations venant de l'<u>INTERIEUR</u> de
 	- <u>UDP</u> *User Datagramme Protocol (Protocole de Datagramme Utilisateur)* - **[RFC 768](https://www.rfc-editor.org/rfc/rfc768.txt)** : Un des principaux **protocoles de télécommunication** utilisés par Internet. Il fait partie de la **couche transport du modèle OSI** (4eme couche), comme TCP. UDP est une méthode normalisée de **transfert de données entre deux ordinateurs sur un réseau**. Par rapport à d'autres protocoles, UDP accomplit ce processus de manière simple : <u>**il envoie des paquets (unités de transmission de données) directement à un ordinateur cible, sans établir de connexion préalable, sans indiquer l'ordre de ces paquets ni vérifier s'ils sont arrivés comme prévu**</u>. (Les paquets UDP sont appelés « datagrammes »). Ce protocole ressemble beaucoup a [TCP](https://fr.wikipedia.org/wiki/Transmission_Control_Protocol), mais il est moins fiable. *Par exemple : Youtube ou les sites de streaming utilisent le protocole UDP pour envoyer des données, au lieu d'envoyer tout d'un coup, il envoit toutes les infor;ation en continue.* **Pour conclure : <u>Le protocole UDP est couramment utilisé dans les communications sensibles au facteur temps</u>**. [<u><Pour mieux comprend **UDP** et ses différences avec **TCP**></u>](https://www.cloudflare.com/fr-fr/learning/ddos/glossary/user-datagram-protocol-udp/).
 ![](assets/TCP-vs-UDP.png)
 
+	- <u>Connexion en Tunnel</u> : Une connexion en tunnel est un chemin logique créé entre deux points d'un réseau pour transporter des données encapsulées. Dans le cas de VXLAN, le tunnel est créé entre deux VTEPs pour transporter les trames Ethernet encapsulées.
+
 Ces termes étaient important pour comprendre ce qu'est réellement le **VXLAN**. En une phrase : <u>VXLAN est une technologie qui permet de créer des **réseaux virtuels (VLAN)** qui peuvent s'étendre au-delà des limites physiques d'un **réseau local (LAN)**.</u> (Et aussi le VXLAN s'effectue au niveau de la couche 3 du modèle OSI)
 ### Plus précisément :
 <u>**VXLAN est une technologie de virtualisation de réseau qui permet de créer des réseaux virtuels étendus sur des réseaux physiques. Elle est particulièrement utile dans les environnements de centres de données et de cloud computing, où la flexibilité et l'évolutivité sont cruciales.**</u>
@@ -60,7 +62,7 @@ Ces termes étaient important pour comprendre ce qu'est réellement le **VXLAN**
 2. <u>Overlay Networking</u> : VXLAN crée des réseaux superposés (overlay networks) qui peuvent s'étendre sur des réseaux IP sous-jacents (underlay networks). **Cela signifie que les réseaux virtuels peuvent traverser des réseaux physiques, offrant ainsi une grande flexibilité dans la conception et la gestion des réseaux**. *De plus, cela contribue aussi a la conception des **VTEPs** (VXLAN Tunnel EndPoints)*.<br />
 ![](assets/overlay-networking.png)
 
-3. <u>VTEPs (VXLAN Tunnel EndPoints)</u> : Les VTEPs sont des dispositifs qui **encapsulent et décapsulent les trames Ethernet dans les paquets UDP**, permettant ainsi le transport des données à travers le réseau IP. On appelle cela des "tunnels" car une fois l'encapsulation faite, les routeurs qui transmettent l'information entre la source et la destination ne peuvent pas voir en claire le contenu de l'info, jusqu'au destinataire. <u>**Comme un tunnel, on ne voit que ce qui "rentre" et que ce qui "sort", et pas ce qui se passe dans le tunnel**</u>.<br />
+3. <u>VTEPs (VXLAN Tunnel EndPoints)</u> : Les VTEPs sont des dispositifs (physiques ou virtuels) qui **terminent les tunnels VXLAN** **encapsulent et décapsulent les trames Ethernet dans les paquets UDP**, permettant ainsi le transport des données à travers le réseau IP. On appelle cela des "tunnels" car une fois l'encapsulation faite, les routeurs qui transmettent l'information entre la source et la destination ne peuvent pas voir en claire le contenu de l'info, jusqu'au destinataire. <u>**Comme un tunnel, on ne voit que ce qui "rentre" et que ce qui "sort", et pas ce qui se passe dans le tunnel**</u>.<br />
 ![](assets/VTEP.png)
 
 4. <u>*Scalabilité*</u> : Avec jusqu'à <u>**16 millions de réseaux logiques disponibles (exactement 16 777 215)**</u> grâce à un **identifiant de réseau VXLAN (VNI - *Virtual Network Identifier*) de `24 bits`** (contrairement aux 4096 seulement pour VLAN avec un VNI de `12 bits`), <u>VXLAN offre une **ÉVOLUTIVITÉ** bien supérieure</u>, permettant à l'entreprise de créer autant de réseaux virtuels que nécessaire pour ses différents départements ou applications.
@@ -74,7 +76,40 @@ Ces termes étaient important pour comprendre ce qu'est réellement le **VXLAN**
 	- <u>Convergence Lente</u>
 	- <u>Complexité de Gestion</u>
 
-## Pour conclure sur VXLAN
+## <u>Prenons un peu de temps pour comprendre ce que veut dire `encapsuler/décapsuler des trames Ethernet`</u>
+Tout d'abords, il faut comprendre qu'une **trame Ethernet** posséde toutes les infos nécessaire pour un acheminement correct des données (adresses MAC de la source de la destinations, les données en elles-mêmes (payload), etc...). C'est une unité de donnée de couche 2 (liaison).
+
+### 1. <u>Encapsulation</u> et <u>envoi</u> du paquet VXLAN
+
+Si nous sommes dans un réseau VXLAN, cette trame Ethernet va EN TOUT PREMIER être acheminée dans un **VTEP**. Le rôle des VTEP est de créé des points de terminaisons afin de pouvoir créer un **tunnel VXLAN**, Il y a donc seulement 2 VTEPs qui rentrent en compte dans les connections en tunnels : *`On ne voit que l'entrée du tunnel, et sa sorti. On ne sait pas ce qui se passe dans le tunnel. (entré = VTEP qui recoit et encapsule la trame Ethernet depuis la source - destination = VTEP qui recoit la trame encapsulé, et qui la décapsule avant de l'envoyer au destinataire)`* C'est pour cela qu'on représent des connection en tunnel avec un trait direct entre les VTEPs de la source et de la destination (même si ce n'ai pas une connection direct entre les deux, et que le paquet passe quand même par des routeurs intermédiaire, nous allons voir et comprendre ca juste après). ***Pourquoi appelle-t-on cela une connection en tunnel ?*** C'est ce qu'on va voir en comprenant comment fonctionne et en quoi consiste les `encapsulations/décapsulations` des trames Ethernet.
+
+Si nous continuons l'acheminement de notre trame Ethernet, cette trame une fois dans le VTEP, celui-ci va d'abord rajouter un **`HEADER VXLAN`**. Ce header contient le VNI (VXLAN Number Identifier) qui identifie le réseau virtuel auquel la trame appartient.
+
+Ensuite (nous y sommes), voilà l'étape de <u>**`l'encapsulation`**</u>. <u>Le VTEP va alors ENCAPSULER la **trame Ethernet (qui a recu un `HEADER VXLAN` comme rajout)** dans un **paquet UDP (couche 4)**</u>.
+
+Ensuite, ce paquet UDP qui contient la trame Ethernet de la source en tant que data, va **LUI AUSSI** se faire **ENCAPSULER** mais cette fois-ci dans un <u>**PAQUET IP (couche 3)**</u>. Celui-ci comportera alors <u>**les adresses IP source et destination des 2 fameux VTEPs source et destination**</u>.
+
+Et enfin, ce paquet IP (couche 3) qui encapsule le paquet UDP (couche 4) qui encapsule une trame Ethernet (couche 2) est envoyé dans le réseau et atteindra le VTEP (VXLAN Tunnel EndPoint) de la destination : **un tunnel VXLAN s'est créé entre les 2 VTEP**. Tout les routeurs intermédiaires acheminent le paquet pour le faire parvenir au VTEP de destination. Ils ne le désencapsulent car ils ne peuvent pas : les routeurs ne sont pas des VTEPs.
+
+Voilà à quoi ressemble un paquet VXLAN envoyé par le VTEP source :
+![](assets/VXLAN-frame-details.png)
+
+### 2. <u>Désencapsulation</u> et <u>réception</u> du paquet VXLAN
+
+Une fois le dernier routeur intermédiaire parvenu, **celui-ci envoie alors le paquet VXLAN au VTEP de destination**.
+
+Une fois le paquet recu par le VTEP de destination, celui-ci se voit <u>**DÉSENCAPSULÉ**</u> :
+- Il commence par extraire le **paquet UDP** du **paquet IP**.
+- Le VTEP extrait ensuite la **trame Ethernet** <u>original du VXLAN header</u> contenu dans le **paquet UDP**.
+- La trame Ethernet se voit alors <u>**DÉSENCAPSULÉE EST TRANSMISE**</u> sur réseau local vers **sa destination finale**.
+
+![](assets/VTEP-and-tunnels.png)
+
+## Comprendre l'<u>`encapsulation/désencapsulation`</u> est super important pour comprendre comment fonctionne VXLAN
+
+---
+
+# Pour conclure sur VXLAN et son fonctionnement
 
 **VXLAN** est une révolution technologique par rapport aux **VLANs traditionnels** en raison de sa capacité à créer des <u>**réseaux virtuels étendus, évolutifs et flexibles**</u>. Il permet de surmonter les limites des VLANs traditionnels en offrant une <u>**meilleure scalabilité, flexibilité et efficacité dans la gestion des réseaux modernes**</u>, en particulier dans les environnements de <u>*cloud computing et les grands centres de données*</u>. [<Pour en savoir plus sur **VXLAN**>](https://www.fibermall.com/fr/blog/vxlan.htm#) + [Source complémentaire](https://www.juniper.net/fr/fr/research-topics/what-is-vxlan.html)
 
