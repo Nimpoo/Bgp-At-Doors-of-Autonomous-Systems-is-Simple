@@ -131,6 +131,36 @@ Une fois le paquet recu par le VTEP de destination, celui-ci se voit <u>**DÉSEN
   - [Differences between Dynamic and Static VXLAN Modes](https://docs.starlingx.io/datanet/openstack/differences-between-dynamic-and-static-vxlan-modes.html)
   - [Multicast vs Ingress Replication (advanced)](https://nwktimes.blogspot.com/2018/03/vxlan-part-iv-underlay-network_20.html)
 
-- **<u>Trafic BUM</u>** *Broadcast - Unknown unicast - Multicast* : 
+- **<u>Trafic BUM</u>** *Broadcast - Unknown unicast - Multicast* : C'est un type de trafic réseau qui inclut les paquets de diffusion (broadcast), de monodiffusion inconnue (unknown unicast), et de multidiffusion (multicast) :
+	- <u>*Boradcast traffic*</u> (paquet de <u>diffusion</u>) : Les paquets de diffusion sont envoyés à tous les dispositifs d'un réseau local (LAN). Ils utilisent une adresse MAC de destination pour indiquer que le paquet doit être reçu par tous les dispositifs du réseau. Utilisé pour des protocoles comme [ARP (Address Resolution Protocol - couche 3 du modèle OSI)](https://fr.wikipedia.org/wiki/Address_Resolution_Protocol) où un dispositif doit découvrir l'adresse MAC correspondant à une adresse IP.<br />
+![](assets/Broadcast_traffic.gif)
 
--	**<u>Bridge</u>** : 
+	- <u>*Unknown Unicast traffic*</u> (paquet de <u>monodiffusion inconnu</u>) : Les paquets de monodiffusion inconnue sont des paquets destinés à une adresse MAC spécifique, mais le commutateur ne connaît pas encore le port auquel cette adresse MAC est connectée. Se produit lorsque le commutateur n'a pas encore appris l'emplacement de l'adresse MAC de destination. Le paquet est alors diffusé à tous les ports du VLAN (sauf le port d'origine). <u>Exemple</u> : *Un commutateur reçoit un paquet destiné à une adresse MAC qu'il ne connaît pas encore et le diffuse à tous les ports du VLAN pour trouver le dispositif de destination.*<br />
+![](assets/Unknown_unicast_traffic.gif)
+
+	- <u>*Multicast*</u> (paquet de <u>multidiffusion</u>) : Les paquets de multidiffusion sont envoyés à un groupe spécifique de dispositifs qui ont exprimé leur intérêt pour recevoir ce type de trafic. Ils utilisent des adresses MAC de multidiffusion spéciales. Utilisé pour des applications comme le streaming vidéo, les mises à jour logicielles en masse, ou les protocoles de routage multidiffusion. <u>Exemple</u> : *Un serveur de streaming vidéo envoie des paquets de multidiffusion à un groupe de dispositifs abonnés à un flux vidéo spécifique.*<br />
+![](assets/Multicast_traffic.gif)
+
+Le trafic BUM est essentiel pour le fonctionnement de nombreux protocoles réseau, mais il doit être géré avec soin pour éviter les problèmes de performance et de sécurité. Dans les réseaux VXLAN, des méthodes de réplication efficaces comme le multicast (vu plus haut avec l'**Ingress Replication**) sont utilisées pour gérer le trafic BUM et assurer une performance optimale du réseau. mais en terme de sécurité, cela rend vulnérable les réseaux aux attaques "storm" en envoyant une grande quantité de paquets de diffusion pour perturber le réseau. 
+
+-	**<u>Bridge</u>** : Un bridge (ou pont réseau) est une entité logique qui permet de connecter plusieurs interfaces réseau (physiques ou virtuelles) pour qu'elles fonctionnent comme une seule interface. Il agit comme un commutateur virtuel, permettant de transmettre des trames Ethernet entre les interfaces connectées.<br />
+![](assets/bridge.png)
+
+- **<u>VPN</u>** *Virtual Private Network* - **[RFC 2764](https://www.rfc-editor.org/rfc/rfc2764.txt)** : Un VPN est une technologie qui permet de créer une connexion sécurisée et chiffrée entre deux points sur un réseau public, comme Internet. Il permet de protéger les données échangées et de garantir la confidentialité et l'intégrité des communications. Le VPN utilise le **tunneling** (qu'on a vu en détail plus haut) pour encapsuler les données dans un protocole de transport sécurisé. Les données sont chiffrées avant d'être envoyées sur le réseau public, ce qui les protège contre les interceptions et les attaques. Les utilisateurs doivent s'authentifier pour accéder au VPN, ce qui garantit que seules les personnes autorisées peuvent utiliser la connexion sécurisée. <br />Permet aux utilisateurs d'accéder à des ressources réseau à distance de manière sécurisée, comme s'ils étaient physiquement présents sur le réseau local (comme Netflix, et autre).
+![](assets/VPN.png)
+
+- **<u>EVPN</u>** *Ethernet Virtual Private Network* - **[RFC 7432](https://www.rfc-editor.org/rfc/rfc7432.txt)** : EVPN est une technologie qui permet de créer des réseaux privés virtuels Ethernet sur un réseau IP/MPLS (Multiprotocol Label Switching). Il étend les fonctionnalités des VPN traditionnels pour prendre en charge les services Ethernet (en couche 2 donc). EVPN crée un **réseau superposé (overlay network, vu plus haut encore une fois)** qui permet de transporter des trames Ethernet sur un réseau IP/MPLS sous-jacent.<br />
+	- **Utilise <u>BGP (Border Gateway Protocol) comme protocole de contrôle</u> pour échanger des informations de routage et de connectivité entre les points de terminaison du VPN.**<br />
+	- **Utilise des technologies comme <u>VXLAN</u> ou <u>MPLS</u> pour encapsuler et transporter les trames Ethernet entre les points de terminaison.**
+	- Utilisé par les fournisseurs de services pour offrir des services Ethernet privés à leurs clients.
+	- **<u>Évolutivité</u> : Permet de créer des réseaux privés virtuels évolutifs qui peuvent s'étendre au-delà des limites physiques d'un réseau local.**
+
+- **<u>BGP EVPN</u>** *Border Gateway Protocol Ethernet Virtual Private Network* : BGP EVPN est une extension du protocole BGP (Border Gateway Protocol) qui permet de créer des réseaux privés virtuels Ethernet (EVPN) sur des réseaux IP/MPLS. Il combine les fonctionnalités de BGP pour l'échange de routes avec les capacités de VPN Ethernet pour fournir des services de couche 2 sur des réseaux de couche 3.
+	- <u>*CONTROL PLANE*</u> : BGP EVPN utilise BGP comme protocole de contrôle pour échanger des informations de routage et de connectivité entre les points de terminaison du VPN (VTEPs). Les VTEPs échangent des routes et des informations de connectivité via des sessions BGP, ce qui permet de maintenir une vue cohérente du réseau EVPN.
+	- <u>*DATA PLANE*</u> : Les données Ethernet sont encapsulées dans des paquets IP/MPLS et transportées entre les VTEPs via des tunnels.
+	- <u>*OVERLAY NETWORKING*</u> : BGP EVPN crée un réseau superposé (overlay network) qui permet de transporter des trames Ethernet sur un réseau IP/MPLS sous-jacent (underlay network). Cela permet de créer des segments de réseau virtuels qui peuvent traverser des réseaux physiques, offrant ainsi une grande flexibilité dans la conception et la gestion des réseaux.
+	- **<u>UTILISATION</u>** : Permet de connecter plusieurs centres de données de manière transparente, comme s'ils faisaient partie du même réseau local = **Interconnexion de centres de données**. Et permet de créer un grand nombre de réseaux virtuels, ce qui est essentiel pour les grands centres de données et les environnements de cloud computing = **ÉVOLUTIVITÉ**.
+
+- **<u>IP/MPLS</u>** ** - **[RFC ]()** : 
+
+- **<u>VXLAN-BGP-EVPN</u>** : 
