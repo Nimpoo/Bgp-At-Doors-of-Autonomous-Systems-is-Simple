@@ -149,9 +149,9 @@ Le trafic BUM est essentiel pour le fonctionnement de nombreux protocoles résea
 - **<u>VPN</u>** *Virtual Private Network* - **[RFC 2764](https://www.rfc-editor.org/rfc/rfc2764.txt)** : Un VPN est une technologie qui permet de créer une connexion sécurisée et chiffrée entre deux points sur un réseau public, comme Internet. Il permet de protéger les données échangées et de garantir la confidentialité et l'intégrité des communications. Le VPN utilise le **tunneling** (qu'on a vu en détail plus haut) pour encapsuler les données dans un protocole de transport sécurisé. Les données sont chiffrées avant d'être envoyées sur le réseau public, ce qui les protège contre les interceptions et les attaques. Les utilisateurs doivent s'authentifier pour accéder au VPN, ce qui garantit que seules les personnes autorisées peuvent utiliser la connexion sécurisée.<br />Permet aux utilisateurs d'accéder à des ressources réseau à distance de manière sécurisée, comme s'ils étaient physiquement présents sur le réseau local (comme Netflix, et autre).
 ![](assets/VPN.png)
 
-- **<u>EVPN</u>** *Ethernet Virtual Private Network* - **[RFC 7432](https://www.rfc-editor.org/rfc/rfc7432.txt)** : EVPN est une technologie qui permet de créer des réseaux privés virtuels Ethernet sur un réseau IP/MPLS (Multiprotocol Label Switching). Il étend les fonctionnalités des VPN traditionnels pour prendre en charge les services Ethernet (en couche 2 donc). EVPN crée un **réseau superposé (overlay network, vu plus haut encore une fois)** qui permet de transporter des trames Ethernet sur un réseau IP/MPLS sous-jacent.<br />
+- **<u>EVPN</u>** *Ethernet Virtual Private Network* - **[RFC 7432](https://www.rfc-editor.org/rfc/rfc7432.txt)** : EVPN est une technologie qui permet de créer des réseaux privés virtuels Ethernet sur un réseau IP/MPLS (Multiprotocol Label Switching). <span style="color:red;">**/!\ SEULEMENT DANS UN RÉSEAU IP DANS NOTRE CAS, CAR LE SUJET L'IMPOSE. /!\\** </span> Il étend les fonctionnalités des VPN traditionnels pour prendre en charge les services Ethernet (en couche 2 donc). EVPN crée un **réseau superposé (overlay network, vu plus haut encore une fois)** qui permet de transporter des trames Ethernet sur un réseau IP/MPLS sous-jacent. <span style="color:red;">**/!\ PAREIL ICI, DANS NOTRE CAS, EVPN VA CRÉER DES OVERLAY NETWORK QUI PERMET DE <u>TRANSPORTER DES TRAMES ETHERNET SUR UN RÉSEAU IP SEULEMENT</u>. /!\\** </span><br />
 	- **Utilise <u>BGP (Border Gateway Protocol) comme protocole de contrôle</u> pour échanger des informations de routage et de connectivité entre les points de terminaison du VPN.**<br />
-	- **Utilise des technologies comme <u>VXLAN</u> ou <u>MPLS</u> pour encapsuler et transporter les trames Ethernet entre les points de terminaison.**
+	- **Utilise des technologies comme <u>VXLAN</u> ou <u>MPLS</u> pour encapsuler et transporter les trames Ethernet entre les points de terminaison.** <span style="color:red;">**/!\ JE NE VAIS PAS ME RÉPÉTER ON SE COMPREND. /!\\** </span>
 	- Utilisé par les fournisseurs de services pour offrir des services Ethernet privés à leurs clients.
 	- **<u>Évolutivité</u> : Permet de créer des réseaux privés virtuels évolutifs qui peuvent s'étendre au-delà des limites physiques d'un réseau local.**
 
@@ -161,13 +161,39 @@ Le trafic BUM est essentiel pour le fonctionnement de nombreux protocoles résea
 	- <u>*OVERLAY NETWORKING*</u> : BGP EVPN crée un réseau superposé (overlay network) qui permet de transporter des trames Ethernet sur un réseau IP/MPLS sous-jacent (underlay network). Cela permet de créer des segments de réseau virtuels qui peuvent traverser des réseaux physiques, offrant ainsi une grande flexibilité dans la conception et la gestion des réseaux.
 	- **<u>UTILISATION</u>** : Permet de connecter plusieurs centres de données de manière transparente, comme s'ils faisaient partie du même réseau local = **Interconnexion de centres de données**. Et permet de créer un grand nombre de réseaux virtuels, ce qui est essentiel pour les grands centres de données et les environnements de cloud computing = **ÉVOLUTIVITÉ**.
 
+<br />
+
+## <span style="color:red;">/!\ DISCLAIMER /!\ </span>
+
+Dans le sujet, il est dit que : « Maintenant que vous maîtrisez le principe de base du VXLAN, nous allons aller un peu plus loin et explorer le principe du BGP EVPN (rfc 7432) **<u>SANS UTILISER `MPLS` POUR SIMPLIFIER LES CHOSES</u>**. » (OG : « *Now that you have mastered the basic principle of the VXLAN we will go a little further and
+explore the principle of the BGP EVPN (rfc 7432) **<u>without using MPLS to simplify things**</u>*. »)
+
+Revoyons ce qu'est **EVPN** dans le contexte de ce que le sujet impose ---> **SANS L'UTILISATION DE `MPLS`** :
+1. <u>Rappel rapide</u> : EVPN est une technologie qui permet de créer des réseaux privés virtuels Ethernet sur un réseau IP. Il étend les fonctionnalités des VPN traditionnels pour prendre en charge les services Ethernet. EVPN utilise BGP (Border Gateway Protocol) comme protocole de contrôle pour échanger des informations de routage et de connectivité entre les points de terminaison du VPN (VTEPs).
+2. <u>BGP EVPN sans MPLS</u> :
+	- **BGP** : Utilisé comme protocole de contrôle pour échanger des informations de routage et de connectivité entre les VTEPs.
+	- **VXLAN** : Utilisé pour encapsuler et transporter les trames Ethernet sur un réseau IP.
+	- **Flexibilité et Évolutivité** : La combinaison de BGP et VXLAN permet de créer des réseaux virtuels étendus, flexibles et évolutifs, avec une gestion efficace des routes et de la connectivité.
+3. **<u>SYNTHÈSE</u>** :
+	- **EVPN** : Permet de créer des réseaux privés virtuels Ethernet sur un réseau IP ---> <u>**Ethernet VPN**</u>, utilisant BGP pour le <u>plan de contrôle</u> et VXLAN pour le <u>plan de données</u>.
+	- **BGP EVPN** : Utilise BGP pour échanger des informations de routage et de connectivité entre les VTEPs, et VXLAN pour encapsuler et transporter les trames Ethernet sur un réseau IP.
+	- **Utilisation** : EVPN sans MPLS permet de simplifier la configuration et la gestion du réseau tout en offrant une grande flexibilité et évolutivité dans la création de réseaux virtuels étendus.
+
+### <u>Conclusion</u>
+
+**EVPN sans MPLS utilise BGP pour le plan de contrôle et VXLAN pour le plan de données, permettant de créer des réseaux virtuels étendus, flexibles et évolutifs sur un réseau IP. Cette approche simplifie la configuration et la gestion du réseau tout en offrant les avantages de la technologie EVPN.**
+
+## <span style="color:red;">/!\ FIN DU DISCLAIMER /!\ </span>
+
+<br />
+
 - **<u>IP/MPLS</u>** *Internet Protocol / Multi-Protocol Label Switching* (commutation multiprotocole par étiquette sur Internet) - **[RFC 3031](https://www.rfc-editor.org/rfc/rfc3031.txt) + [RFC 3032](https://www.rfc-editor.org/rfc/rfc3032.txt)** : MPLS utilise des **LABELS** (étiquettes) pour identifier les chemins de données entre les nœuds du réseau. Ces labels sont ajoutées aux paquets de données pour définir le chemin qu'ils doivent suivre. Les **nœuds MPLS** (appelés <u>**LSR - Label Switching Routers**</u>) utilisent les labels pour commuter les paquets de données le long des chemins prédéfinis, sans avoir besoin de consulter les tables de routage IP à chaque saut. MPLS permet de créer des **chemins de données virtuels** (<u>**LSP - Label Switched Paths**</u>) qui peuvent être optimisés pour différents types de trafic (voix, vidéo, données, etc.).<br />**SON UTILISATION AVEC IP** : En combinant IP et MPLS, les réseaux peuvent bénéficier d'un acheminement plus efficace et flexible des données. MPLS permet de contourner les limitations des tables de routage IP en utilisant des chemins prédéfinis. MPLS peut être utilisé pour créer des réseaux privés virtuels (VPN) évolutifs et flexibles, comme les VPN MPLS, qui offrent une connectivité sécurisée et isolée entre différents sites.
 
 - **<u>VXLAN-BGP-EVPN</u>** : C'est une <u>**pratique de communication VXLAN basée sur BGP EVPN**</u>. Cette pratique peut <u>**découvrir et établir automatiquement des tunnels, ce qui permet une migration illimitée et transparente des machines virtuelles dans le centre de données, sans que l'utilisateur le perçoive**</u>. Prenons le temps de revoir ce que sont ces 3 termes :
 
 |                     |**BGP**     |**EVPN**    |**VXLAN**   |
 | :------------------ | :--------: | :--------: | :--------: |
-|<u>Definition</u>    |Protocole de routage externe utilisé pour échanger des informations de routage entre différents systèmes autonomes (AS).|Technologie qui permet de créer des réseaux privés virtuels Ethernet sur un réseau IP/MPLS.|Technologie d'encapsulation qui permet de transporter des trames Ethernet (couche 2) dans des paquets UDP (couche 4) sur un réseau IP.|
+|<u>Definition</u>    |Protocole de routage externe utilisé pour échanger des informations de routage entre différents systèmes autonomes (AS).|Technologie qui permet de créer des réseaux privés virtuels Ethernet sur un réseau IP/MPLS (ou sur des réseau IP sans MPLS pour simplifier la configuration).|Technologie d'encapsulation qui permet de transporter des trames Ethernet (couche 2) dans des paquets UDP (couche 4) sur un réseau IP.|
 |<u>Fonctionnalité</u>|Permet de maintenir une vue cohérente des routes disponibles et de prendre des décisions de routage optimales.|Étend les fonctionnalités des VPN traditionnels pour prendre en charge les services Ethernet.|Permet de créer des réseaux virtuels étendus qui peuvent s'étendre au-delà des limites physiques d'un réseau local.|
 |<u>Utilisation</u>   |BGP est utilisé comme protocole de contrôle pour échanger des informations de routage et de connectivité entre les points de terminaison VPN (VTEPs).|EVPN utilise BGP pour le plan de contrôle, permettant l'échange d'informations de routage et de connectivité entre les VTEPs.|VXLAN est souvent utilisé comme technologie de transport pour les trames Ethernet dans les réseaux EVPN, offrant une grande flexibilité et évolutivité.|
 |<u>Avantages</u>     |      -     |Permet de créer des réseaux virtuels étendus, flexibles et évolutifs, avec une gestion efficace des routes et de la connectivité.|Permet de créer des segments de réseau virtuels qui peuvent traverser des réseaux physiques, offrant ainsi une grande flexibilité dans la conception et la gestion des réseaux.|
@@ -187,3 +213,5 @@ La combinaison de BGP, EVPN et VXLAN permet de créer des réseaux virtuels évo
 [<Pour plus de détails sur <u>la pratique VXLAN-BGP-EVPN</u>>](https://www.fs.com/fr/blog/complete-guide-vxlanbgpevpn-in-enterprise-network-11738.html)
 
 ![](assets/BGP-EVPN-VXLAN.png)
+
+- **<u>The principe of *Route Reflection* (RR)</u>** : 
