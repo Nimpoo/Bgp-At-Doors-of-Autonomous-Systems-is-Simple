@@ -214,4 +214,8 @@ La combinaison de BGP, EVPN et VXLAN permet de créer des réseaux virtuels évo
 
 ![](assets/BGP-EVPN-VXLAN.png)
 
-- **<u>The principe of *Route Reflection* (RR)</u>** : 
+- **<u>The principe of *Route Reflector (reflecteur de route)* (RR)</u>** : Composant utilisé par certains protocoles de routage comme BGP pour réduire la complexité et améliorer l'évolutivité des configurations BGP. Il permet de centraliser l'échange d'informations de routage entre les routeurs BGP sans nécessiter de sessions BGP complètes entre chaque paire de routeurs. **Au lieu d'avoir une session BGP entre chaque paire de routeurs (ce qui peut être de l'ordre de n(n−1)/2 sessions pour n routeurs), les routeurs clients établissent une session BGP uniquement avec le Route Reflector.** Ainsi, cela réduit considérablement le nombre de sessions BGP nécessaires, simplifiant ainsi la configuration et la gestion du réseau.
+
+	- Dans notre contexte actuel (BGP EVPN) : Les routeurs clients (VTEPs) établissent des sessions BGP avec le Route Reflector, qui collecte et redistribue les informations de routage EVPN et simplifie grandement la configuration en centralisant les échanges des informations de routage EVPN. Les RR permettent de rajouter facilement de nouveaux VTEPs aux réseaux EVPN sans avoir à reconfigurer toutes les sessions BGP existantes.
+
+![](assets/route-reflector.png)
