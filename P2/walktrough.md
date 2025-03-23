@@ -4,15 +4,15 @@
 
 Clone : 
 ```sh
-git clone https://github.com/FRRouting/frr
+git clone https://github.com/FRRouting/frr.git
 ```
 # Step 2
 
 Build frr routing image :
 
 ```sh
-pushd frr
-    docker build -t frr:latest -f docker/debian/Dockerfile docker/debian/
+pushd frr/docker/debian
+    docker build -t frr:latest .
 popd
 ```
 
@@ -21,10 +21,8 @@ popd
 Build docker host and router docker images :
 
 ```sh
-pushd docker
-    docker build -f router_jbettini -t router_jbettini:p2 .
-    docker build -f host_jbettini -t host_jbettini:p2 .
-popd
+docker build -f router_ -t router_jbettini:P2 .
+docker build -f host_ -t host_jbettini:P2 .
 ```
 
 # Step 4
