@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd $(dirname $0)
+pushd $(dirname $0)
 
 if [ -z "$LOGIN" ]; then
 	echo "LOGIN is not defined"
@@ -25,3 +25,5 @@ build P2 router
 
 build P3 host
 build P3 router
+
+popd
