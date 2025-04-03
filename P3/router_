@@ -5,4 +5,4 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y vim net-tools bri
 RUN sed -i 's/^\(bgpd\|ospfd\|isisd\)=no$/\1=yes/g; \
 	s/^#\(frr_profile="traditional"\)$/\1/g' /etc/frr/daemons
 
-COPY --chmod=755 setup.sh /usr/lib/frr/docker-start
+COPY --chmod=755 setup.sh /

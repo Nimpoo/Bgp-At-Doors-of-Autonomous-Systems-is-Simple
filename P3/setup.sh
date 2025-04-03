@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# ===
+router_id="$(hostname | sed 's/router_.*-//g')"
 
-if [ "$(hostname | sed 's/router_.*-//g')" = "1" ]; then
+if [ "$router_id" = "1" ]; then
 
 vtysh << EOF
 configure terminal
@@ -43,10 +43,10 @@ vtysh << EOF
 configure terminal
 no ipv6 forwarding
 interface eth1
-ip address 10.1.1.$(echo "-6 + $(hostname | sed 's/router_.*-//g') * 4" | bc)/30
+ip address 10.1.1.$((-6 + $router_id * 4))/30
 ip ospf area 0
 interface lo
-ip address 1.1.1.$(hostname | sed 's/router_.*-//g')/32
+ip address 1.1.1.$router_id/32
 ip ospf area 0
 router bgp 1
 neighbor 1.1.1.1 remote-as 1
@@ -59,8 +59,3 @@ router ospf
 EOF
 
 fi
-
-# ===
-
-source /usr/lib/frr/frrcommon.sh
-/usr/lib/frr/watchfrr $(daemon_list)
