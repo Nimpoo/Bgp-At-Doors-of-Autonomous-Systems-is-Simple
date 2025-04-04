@@ -99,7 +99,6 @@ EOF
 - `ip link set dev vxlan10 up` : Active l'interfacw `vxlan10`
 - `brctl addif br0 vxlan10` : Ajoute l'interface `vxlan10` au bridge `br0`
 - `brctl addif br0 eth0` : Ajoute l'interface `eth0` au bridge `br0`
-
 - `vtysh << EOF` : Ouvre le heredoce qui enverra les commandes suivante à vtysh
 - `configure terminal` : Passe en mode **configuration** (dans vtysh), permettant de modifier la configuration du routeur
 - `no ipv6 forwarding` : Désactive le forwarding IPv6 sur le routeur, cela signifie que le routeur ne transmettra pas les paquets IPv6
