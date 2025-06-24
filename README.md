@@ -19,7 +19,7 @@ Maybe I abused a bit, but I wanted to be sure that I understood everything. It's
 As you can see in the [walktrhough in the part 2](https://github.com/Nimpoo/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/blob/main/P2/walktrough.md), we create an image of FRRouting, but you can use Quagga or GNU Zebra, but FRRouting may be more up to date and have more features and it's a fork of Quagga (and Quagga a fork of GNU Zebra). So I recommend using FRRouting, but you can use Quagga or GNU Zebra or another Internet routing protocol suite.
 
 ### <u>🚨 Second Warning 🚨</u>
-If you use FRRouting, you can see we build an image of it for **Debian**. Previously we build an image of FRRouting for **Alpine** but we have noticed that is not working properly with some commands (`ipconfig`, `vtysh`, etc...). Because Alpine has a deprecated version of `Busybox`. And we switched to Debian because it is more stable and has a better support for FRRouting. So I recommend using Debian as the base image for FRRouting.
+If you use FRRouting, you can see we build an image of it for **Debian**. Previously we build an image of FRRouting for **Alpine** but we have noticed that is not working properly with some commands (`ipconfig`, `vtysh`, etc...). Because Alpine has a deprecated version of `Busybox`. And we switched to Debian because it is more stable and has a better support for FRRouting. So we recommend using Debian as the base image for FRRouting.
 
 ## Summary
 
