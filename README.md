@@ -8,7 +8,7 @@ The project is divided into **three** parts:
 - **Part 2**: Creation of the **AS** configuration files (VXLAN, bridge, etc...), and learning how to configure BGP in FRRouting.
 - **Part 3**: Creation of the final **topology**, setup of route reflectors, hnowing what is the method of **`BGP-EVPN-VXLAN`**, configuration with `vtysh` and adding a third host to the topology.
 
-We will need A LOT OF DOCUMENTATION to understand what we are supposed to do, so I will try to explain everything in the [Glozzzaire.md](https://github.com/Nimpoo/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/blob/main/Glozzzaire.md) file.
+We will need A LOT OF DOCUMENTATION to understand what we are supposed to do, so we will try to explain everything in the [Glozzzaire.md](https://github.com/Nimpoo/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/blob/main/Glozzzaire.md) file.
 
 ## ALL THE DOCUMENTATION IS NECESSARY TO UNDERSTAND THE PROJECT
 
@@ -16,7 +16,7 @@ Maybe I abused a bit, but I wanted to be sure that I understood everything. It's
 
 ## 🚨 WARNINGS ABOUT FRROUTING 🚨
 ### <u>🚨 First Warning 🚨</u>
-As you can see in the [walktrhough in the part 2](https://github.com/Nimpoo/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/blob/main/P2/walktrough.md), we create an image of FRRouting, but you can use Quagga or GNU Zebra, but FRRouting may be more up to date and have more features and it's a fork of Quagga (and Quagga a fork of GNU Zebra). So I recommend using FRRouting, but you can use Quagga or GNU Zebra or another Internet routing protocol suite.
+As you can see in the [walktrhough in the part 2](https://github.com/Nimpoo/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/blob/main/P2/walktrough.md), we create an image of FRRouting, but you can use Quagga or GNU Zebra, but FRRouting may be more up to date and have more features and it's a fork of Quagga (and Quagga a fork of GNU Zebra). So we recommend using FRRouting, but you can use Quagga or GNU Zebra or another Internet routing protocol suite.
 
 ### <u>🚨 Second Warning 🚨</u>
 If you use FRRouting, you can see we build an image of it for **Debian**. Previously we build an image of FRRouting for **Alpine** but we have noticed that is not working properly with some commands (`ipconfig`, `vtysh`, etc...). Because Alpine has a deprecated version of `Busybox`. And we switched to Debian because it is more stable and has a better support for FRRouting. So we recommend using Debian as the base image for FRRouting.
