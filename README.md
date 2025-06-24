@@ -1,6 +1,6 @@
 # Bgp-At-Doors-of-Autonomous-Systems-is-Simple
 
-### This 42 project is a simple implementation of BGP (Border Gateway Protocol) that allows you to simulate the routing of packets between autonomous systems (ASes). The goal is to understand how BGP works and how it can be used to route packets between different networks.
+### This 42 project is a simple implementation of BGP (Border Gateway Protocol) that allows you to simulate the routing of packets between autonomous systems (AS). The goal is to understand how BGP works and how it can be used to route packets between different networks.
 
 The project is divided into **three** parts:
 
